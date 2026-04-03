@@ -29,8 +29,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/perfil/editar', [LoginController::class, 'showEditPerfil'])->name('perfil.edit');
     Route::put('/perfil/editar', [LoginController::class, 'updatePerfil'])->name('perfil.update');
     Route::get('/perfil', [LoginController::class, 'showPerfil'])->name('perfil.show');
-
-    Route::get('/busca', [ProcurarController::class, 'index'])->name('procurar.index');
     
     Route::get('/salvos', [FavoritoController::class, 'index'])->name('favoritos.index');
     Route::post('/favoritos/{postagem_id}', [FavoritoController::class, 'toggle'])->name('favoritos.toggle');

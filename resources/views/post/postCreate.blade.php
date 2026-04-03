@@ -9,6 +9,19 @@
     <form action="{{ route('post.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
 
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+    
+            @if (auth()->user()->profile_image)
+            <img 
+                src="{{ asset('storage/' . auth()->user()->profile_image) }}" 
+                width="40"
+                style="border-radius:50%; object-fit:cover;"
+            >
+            @endif
+
+            <span>{{ auth()->user()->name }}</span>
+        </div>
+
         <input type="file" name="foto" accept="image/*">
 
         <input type="text" name="nome" placeholder="Nome do produto">

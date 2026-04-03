@@ -27,6 +27,28 @@
 
     <br><br>
 
+    <form method="GET" action="{{ route('favoritos.index') }}">
+        <input
+            type="text"
+            name="search"
+            value="{{ request('search') }}"
+            placeholder="Buscar por nome, descrição, selo..."
+        >
+
+        <select name="selo">
+            <option value="">Todos os selos</option>
+            <option value="organico"      {{ request('selo') == 'organico'      ? 'selected' : '' }}>Orgânico</option>
+            <option value="natural"       {{ request('selo') == 'natural'       ? 'selected' : '' }}>Natural</option>
+            <option value="agroecologico" {{ request('selo') == 'agroecologico' ? 'selected' : '' }}>Agroecológico</option>
+            <option value="convencional"  {{ request('selo') == 'convencional'  ? 'selected' : '' }}>Convencional</option>
+        </select>
+
+        <button type="submit">Buscar</button>
+        @if(request('search') || request('selo'))
+            <a href="{{ route('favoritos.index') }}">Limpar filtros</a>
+        @endif
+    </form>
+
     @forelse ($favoritos as $postagem)
         <div>
             @if ($postagem->foto)

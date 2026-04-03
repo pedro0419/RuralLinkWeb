@@ -26,8 +26,13 @@
     <h1>{{ $user->name }}</h1>
 
     @if ($user->profile_image)
-        <img src="{{ asset('storage/' . $user->profile_image) }}" alt="Foto de perfil" width="100">
+    <img 
+        src="{{ asset('storage/' . $user->profile_image) }}" 
+        width="120"
+        style="border-radius:50%; object-fit:cover;"
+    >
     @endif
+
 
     <p><strong>Descrição:</strong> {{ $user->description ?? 'Sem descrição.' }}</p>
     <p><strong>Localização:</strong> {{ $user->location }}</p>
@@ -62,6 +67,11 @@
     @empty
         <p>Nenhuma postagem ainda.</p>
     @endforelse
+
+    <form action="{{ route('logout') }}" method="POST">
+        @csrf
+        <button type="submit">Sair</button>
+    </form>
 
     {{-- Barra de navegação inferior --}}
     <nav class="nav-bottom">

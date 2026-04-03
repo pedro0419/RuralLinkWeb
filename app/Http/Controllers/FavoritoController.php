@@ -26,13 +26,27 @@ class FavoritoController extends Controller
     }
 
     // Página de salvos
-    public function index()
+    public function index(Request $request)
     {
-        /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        $favoritos = $user->favoritos()->latest('favoritos.created_at')->get();
+        $query = $user->favoritos()->latest('favoritos.created_at');
 
-        return view('favoritos.index', compact('favoritos'));
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('nome', 'like', '%' . $request->search . '%')
+                ->orWhere('descricao', 'like', '%' . $request->search . '%')
+                ->orWhere('selo', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        if ($request->filled('selo')) {
+            $query->where('selo', $request->selo);
+        }
+
+        $favoritos = $query->get();
+
+        return view('Favoritos.index', compact('favoritos'));
     }
 }
+
