@@ -10,10 +10,26 @@ class PostagemController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Postagem::all();
+        $query = Postagem::query();
+
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('nome', 'like', '%' . $request->search . '%')
+                ->orWhere('descricao', 'like', '%' . $request->search . '%')
+                ->orWhere('selo', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        if ($request->filled('selo')) {
+            $query->where('selo', $request->selo);
+        }
+
+        $posts = $query->latest()->get();
+
         return view('homePage', compact('posts'));
+
     }
 
     /**
@@ -97,8 +113,17 @@ class PostagemController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Postagem $postagem)
+    public function destroy($id)
     {
-        //
+        $postagem = Postagem::findOrFail($id);
+
+        if ($postagem->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $postagem->delete();
+
+        return redirect()->route('perfil.show')
+            ->with('success', 'Postagem deletada com sucesso!');
     }
 }

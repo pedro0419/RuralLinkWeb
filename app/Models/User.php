@@ -1,17 +1,17 @@
 <?php
-
+ 
 namespace App\Models;
-
+ 
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-
+ 
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
-
+ 
     protected $fillable = [
         'name',
         'email',
@@ -21,12 +21,12 @@ class User extends Authenticatable
         'description',
         'profile_image',
     ];
-
+ 
     protected $hidden = [
         'password',
         'remember_token',
     ];
-
+ 
     protected function casts(): array
     {
         return [
@@ -34,9 +34,19 @@ class User extends Authenticatable
             'password'          => 'hashed',
         ];
     }
-
+ 
     public function postagens()
     {
         return $this->hasMany(\App\Models\Postagem::class);
+    }
+ 
+    public function favoritos()
+    {
+        return $this->belongsToMany(
+            \App\Models\Postagem::class,
+            'favoritos',
+            'user_id',
+            'postagem_id'
+        )->withTimestamps();
     }
 }
