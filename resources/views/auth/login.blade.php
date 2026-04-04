@@ -18,14 +18,25 @@
             overflow: hidden;
         }
 
+        /* ── PHONE SHELL ── */
         .phone {
             position: relative;
-            width: 320px;
-            height: 600px;
+            width: 375px;
+            height: 760px;
             background: #1a1a1a;
-            border-radius: 45px;
-            padding: 10px;
-            box-shadow: 0 0 0 2px #3a3a3a, 0 30px 60px rgba(0,0,0,0.8);
+            border-radius: 52px;
+            padding: 14px;
+            box-shadow:
+                0 0 0 2px #3a3a3a,
+                0 0 0 4px #111,
+                0 40px 80px rgba(0,0,0,0.7),
+                inset 0 0 0 1px rgba(255,255,255,0.06);
+            animation: phoneIn 0.6s cubic-bezier(.22,1,.36,1) both;
+        }
+
+        @keyframes phoneIn {
+            from { opacity:0; transform:translateY(32px) scale(.96); }
+            to   { opacity:1; transform:translateY(0) scale(1); }
         }
 
         .screen {
@@ -40,8 +51,9 @@
         .main-content {
             height: 100%;
             width: 100%;
+            /* AJUSTE AQUI: Caminho atualizado conforme sua imagem */
             background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.5)), 
-                        url("{{ asset('assets/Untitled design (16).png') }}");
+                        url("{{ asset('Telas/Login/assets/Untitled design (16).png') }}");
             background-size: cover;
             background-position: center;
             display: flex;
@@ -94,15 +106,15 @@
         
         <div class="main-content">
             <div class="flex justify-start -mt-3 -ml-3">
-                <img src="{{ asset('assets/RuralLink.png') }}" alt="Rural Link" class="h-32 w-auto object-contain">
+                <img src="{{ asset('Telas/Login/assets/RuralLink.png') }}" alt="Rural Link" class="h-32 w-auto object-contain">
             </div>
 
             <div class="flex-1 flex flex-col justify-center">
                 <h1 class="text-white text-6xl font-bold text-center mb-4 tracking-tight">Login</h1>
                 
-                {{-- Exibição de Erros --}}
+                {{-- Exibição de Erros do Laravel --}}
                 @if ($errors->any())
-                    <div class="mb-4 text-red-400 text-xs text-center font-semibold">
+                    <div class="mb-4 text-red-400 text-xs text-center font-semibold bg-black/40 p-2 rounded">
                         @foreach ($errors->all() as $erro)
                             <p>{{ $erro }}</p>
                         @endforeach
@@ -132,8 +144,8 @@
                     </div>
 
                     <div class="flex items-center gap-2 px-1">
-                        <input type="checkbox" name="lembrar" id="lembrar" class="rounded border-gray-300">
-                        <label for="lembrar" class="text-white text-[10px] cursor-pointer">Lembrar de mim</label>
+                        <input type="checkbox" name="remember" id="remember" class="rounded border-gray-300">
+                        <label for="remember" class="text-white text-[10px] cursor-pointer">Lembrar de mim</label>
                     </div>
 
                     <button type="submit" class="btn-entrar">

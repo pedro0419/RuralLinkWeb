@@ -219,7 +219,7 @@
                         </span>
                         <select name="selo" class="input-field {{ $errors->has('selo') ? 'has-error' : '' }}" style="color:{{ old('selo') ? '#374151' : '#9ca3af' }};" onchange="this.style.color='#374151'">
                             <option value="" disabled {{ old('selo') ? '' : 'selected' }}>Tipo de produtor (Selo)..</option>
-                            <option value="autonomo" {{ old('selo')=='autonomo'?'selected':'' }}>👤 Autônomo</option>
+                            <option value="convencional">🏭 Convencional</option>
                             <option value="empresa" {{ old('selo')=='empresa'?'selected':'' }}>🏢 Empresa</option>
                             <option value="cooperativa" {{ old('selo')=='cooperativa'?'selected':'' }}>🤝 Cooperativa</option>
                             <option value="organico" {{ old('selo')=='organico'?'selected':'' }}>🌿 Orgânico</option>
