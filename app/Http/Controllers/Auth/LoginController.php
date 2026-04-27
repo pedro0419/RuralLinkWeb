@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 class LoginController extends Controller
 {
@@ -122,39 +123,51 @@ class LoginController extends Controller
  
     // Processa a atualização do perfil
     public function updatePerfil(Request $request)
-    {
+{
+    $user = Auth::user();
 
-        $user = Auth::user();
- 
-        $request->validate([
-            'name'        => 'required|string|max:255',
-            'description' => 'nullable|string|max:1000',
-            'location'    => 'required|string|max:255',
-            'phone'       => 'required|string|max:20',
-        ], [
-            'name.required'     => 'O nome é obrigatório.',
-            'name.max'          => 'O nome pode ter no máximo 255 caracteres.',
-            'location.required' => 'A localização é obrigatória.',
-            'location.max'      => 'A localização pode ter no máximo 255 caracteres.',
-            'phone.required'    => 'O telefone é obrigatório.',
-            'phone.max'         => 'O telefone pode ter no máximo 20 caracteres.',
-            'description.max'   => 'A descrição pode ter no máximo 1000 caracteres.',
-        ]);
- 
-        $user->update([
-            'name'        => $request->name,
-            'description' => $request->description,
-            'location'    => $request->location,
-            'phone'       => $request->phone,
-        ]);
- 
-        return redirect()->route('perfil.edit')
-            ->with('success', 'Perfil atualizado com sucesso!');
+    $request->validate([
+        'name'          => 'required|string|max:255',
+        'description'   => 'nullable|string|max:1000',
+        'location'      => 'required|string|max:255',
+        'phone'         => 'required|string|max:20',
+        'profile_image' => 'nullable|image|max:2048',
+    ], [
+        'name.required'     => 'O nome é obrigatório.',
+        'name.max'          => 'O nome pode ter no máximo 255 caracteres.',
+        'location.required' => 'A localização é obrigatória.',
+        'location.max'      => 'A localização pode ter no máximo 255 caracteres.',
+        'phone.required'    => 'O telefone é obrigatório.',
+        'phone.max'         => 'O telefone pode ter no máximo 20 caracteres.',
+        'description.max'   => 'A descrição pode ter no máximo 1000 caracteres.',
+    ]);
+
+    $data = [
+        'name'        => $request->name,
+        'description' => $request->description,
+        'location'    => $request->location,
+        'phone'       => $request->phone,
+    ];
+
+    // Só processa a imagem se um arquivo foi enviado
+    if ($request->hasFile('profile_image')) {
+        // Deleta a imagem antiga se existir
+        if ($user->profile_image) {
+            Storage::disk('public')->delete($user->profile_image);
+        }
+
+        // Faz o upload e salva o caminho
+        $data['profile_image'] = $request->file('profile_image')->store('profile_images', 'public');
+    }
+
+    $user->update($data);
+
+    return redirect()->route('perfil.edit')
+        ->with('success', 'Perfil atualizado com sucesso!');
     }
     public function showPerfil()
-    {
+{
         $user = Auth::user()->load('postagens');
         return view('auth.perfil', compact('user'));
     }
 }
-

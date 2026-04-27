@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('foto');
             $table->string('nome');
-            $table->enum('selo', ['organico', 'natural', 'agroecologico', 'convencional']);
-            $table->decimal('preco_kg', 8, 2);
+            $table->enum('selo', ['organico', 'empresa', 'autonomo', 'cooperativa']);
+            $table->decimal('preco_kg', 15, 2);            
             $table->decimal('quantidade', 8, 2);
             $table->text('descricao')->nullable();
             $table->timestamps();

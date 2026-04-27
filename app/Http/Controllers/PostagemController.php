@@ -48,7 +48,7 @@ class PostagemController extends Controller
         $request->validate([
             'foto'        => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
             'nome'        => 'required|string|max:255',
-            'selo'        => 'required|string|in:organico,natural,agroecologico,convencional',
+            'selo'        => 'required|string|in:organico,empresa,autonomo,cooperativa',
             'preco_kg'    => 'required|numeric|min:0.01',
             'quantidade'  => 'required|numeric|min:0.1',
             'descricao'   => 'nullable|string|max:1000',
