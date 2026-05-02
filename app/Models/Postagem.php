@@ -13,7 +13,7 @@ class Postagem extends Model
         'selo',
         'preco_kg',
         'quantidade',
-        'descricao'
+        'descricao',
     ];
 
 
