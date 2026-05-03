@@ -7,6 +7,36 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
     <style>
+        /* Fundo desfocado */
+        .overlay-blur {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(6px);
+            z-index: 90;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .overlay-blur.ativo {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Estado do card focado */
+        .product-card.focado {
+            position: absolute;
+            top: 50%;
+            left: 14px;
+            right: 14px;
+            transform: translateY(-50%);
+            z-index: 100;
+            margin: 0;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            max-height: 80%;
+            overflow-y: auto;
+        }
+
         * { font-family: 'Nunito', sans-serif; box-sizing: border-box; }
         body {
             min-height: 100vh;
@@ -51,7 +81,7 @@
             width: 110px; height: 30px;
             background: #111;
             border-radius: 20px;
-            z-index: 100; /* ← era 20, muda para 100 */
+            z-index: 100;
         }
         .status-bar {
             padding: 14px 24px 6px;
@@ -144,16 +174,19 @@
             transition: background .2s;
         }
         .btn-add:hover { background: #f0fdf4; }
+        
+        /* Modificações no Product Card para suportar o Ver Mais */
         .product-card {
             background: white;
             border-radius: 18px;
             padding: 12px;
-            display: flex;
-            gap: 12px;
-            align-items: center;
             border: 1.5px solid #f0fdf4;
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        .product-card-top {
+            display: flex; gap: 12px; align-items: center;
         }
         .product-img {
             width: 60px; height: 60px;
@@ -192,6 +225,25 @@
             border: none;
             text-decoration: none;
         }
+
+        /* Lógica Ver Mais */
+        .ver-mais-btn {
+            display: flex; align-items: center; gap: 3px;
+            background: none; border: none; cursor: pointer;
+            color: #16a34a; font-size: 11px; font-weight: 800;
+            padding: 6px 0 0; font-family: 'Nunito', sans-serif;
+            margin-top: 4px;
+        }
+        .expandido {
+            max-height: 0; overflow: hidden;
+            transition: max-height .35s ease, opacity .2s ease;
+            opacity: 0;
+        }
+        .expandido.aberto {
+            max-height: 500px;
+            opacity: 1;
+        }
+
         .nav-bottom {
             background: white;
             border-top: 1px solid #f0f0f0;
@@ -212,6 +264,7 @@
 
 <div class="phone">
     <div class="screen">
+        <div id="overlay-blur" class="overlay-blur" onclick="fecharTodos()"></div>
         <div class="dynamic-island"></div>
 
         <div class="status-bar">
@@ -287,35 +340,60 @@
 
                 @forelse ($user->postagens as $postagem)
                     <div class="product-card">
-                        @if($postagem->foto)
-                            <img src="{{ Storage::url($postagem->foto) }}" class="product-img" />
-                        @else
-                            <div class="product-img-placeholder">
-                                <svg width="24" height="24" fill="none" stroke="#86efac" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                            </div>
-                        @endif
+                        <div class="product-card-top">
+                            @if($postagem->foto)
+                                <img src="{{ Storage::url($postagem->foto) }}" class="product-img" />
+                            @else
+                                <div class="product-img-placeholder">
+                                    <svg width="24" height="24" fill="none" stroke="#86efac" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                </div>
+                            @endif
 
-                        <div style="flex:1; min-width:0;">
-                            <p style="font-size:13px; font-weight:800; color:#111; margin:0 0 2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ $postagem->nome }}</p>
-                            <p style="font-size:11px; color:#6b7280; font-weight:600; margin:0 0 4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ $postagem->descricao }}</p>
-                            <div style="display:flex; align-items:center; gap:3px; margin-bottom:2px;">
-                                <svg width="11" height="11" fill="none" stroke="#9ca3af" stroke-width="2" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>
-                                <span style="font-size:10px; color:#9ca3af; font-weight:600;">{{ $user->location ?? '-' }}</span>
+                            <div style="flex:1; min-width:0;">
+                                <p style="font-size:13px; font-weight:800; color:#111; margin:0 0 4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ $postagem->nome }}</p>
+                                
+                                <div style="display:flex; align-items:center; gap:3px; margin-bottom:4px;">
+                                    <svg width="11" height="11" fill="none" stroke="#9ca3af" stroke-width="2" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>
+                                    <span style="font-size:10px; color:#9ca3af; font-weight:600;">{{ $user->location ?? '-' }}</span>
+                                </div>
+                                <span class="badge-price">
+                                    R$ {{ number_format($postagem->preco_kg, 2, ',', '.') }} / Kg
+                                </span>
                             </div>
-                            <span class="badge-price">
-                                R$ {{ number_format($postagem->preco_kg, 2, ',', '.') }} / Kg
-                            </span>
-                        </div>
 
-                        <div style="display:flex; flex-direction:column; gap:6px; align-items:center; flex-shrink:0;">
                             <form action="{{ route('post.delete', $postagem->id) }}" method="POST" style="margin:0;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="action-icon" onclick="return confirm('Deletar este produto?')" style="background:#fff5f5;">
+                                <button type="submit" class="action-icon" onclick="return confirm('Deletar este produto?')" style="background:#fff5f5;" title="Deletar produto">
                                     <svg width="14" height="14" fill="none" stroke="#ef4444" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                 </button>
                             </form>
                         </div>
+
+                        <button class="ver-mais-btn" onclick="toggleVerMais(this)">
+                            Ver mais
+                        </button>
+
+                        <div class="expandido">
+                            <div style="border-top: 1.5px solid #f0fdf4; margin-top: 8px; padding-top: 12px;">
+                                @if($postagem->descricao)
+                                <div style="margin-bottom:10px;">
+                                    <p style="font-size:11px; font-weight:800; color:#374151; margin:0 0 3px;">Descrição do produto</p>
+                                    <p style="font-size:11px; color:#6b7280; font-weight:600; margin:0; line-height:1.5;">{{ $postagem->descricao }}</p>
+                                </div>
+                                @endif
+
+                                <div style="display:flex; align-items:center; gap:6px;">
+                                    <div style="display:flex; align-items:center; gap:4px; background:#f0fdf4; padding:5px 10px; border-radius:10px;">
+                                        <svg width="18" height="18" fill="none" stroke="#22c55e" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                                        <span style="font-size:11px; font-weight:800; color:#15803d;">
+                                            Estoque: {{ $postagem->quantidade ?? 0 }} Kg
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 @empty
                     <div style="text-align:center; padding:20px 0;">
@@ -354,6 +432,37 @@
     }
     tick();
     setInterval(tick, 10000);
+
+    function toggleVerMais(btn) {
+        const card = btn.closest('.product-card');
+        const expandido = card.querySelector('.expandido');
+        const overlay = document.getElementById('overlay-blur');
+
+        const estaAberto = card.classList.contains('focado');
+
+        if (!estaAberto) {
+            fecharTodos();
+            card.classList.add('focado');
+            expandido.classList.add('aberto');
+            btn.classList.add('aberto');
+            overlay.classList.add('ativo');
+            btn.textContent = 'Ver menos';
+        } else {
+            fecharTodos();
+        }
+    }
+
+    function fecharTodos() {
+        document.querySelectorAll('.product-card.focado').forEach(c => {
+            c.classList.remove('focado');
+            c.querySelector('.expandido').classList.remove('aberto');
+            const btn = c.querySelector('.ver-mais-btn');
+            btn.classList.remove('aberto');
+            btn.textContent = 'Ver mais';
+        });
+        const overlay = document.getElementById('overlay-blur');
+        if (overlay) overlay.classList.remove('ativo');
+    }
 </script>
 </body>
 </html>
