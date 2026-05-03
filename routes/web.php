@@ -5,6 +5,8 @@ use App\Http\Controllers\PostagemController;
 use App\Http\Controllers\ProcurarController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\FavoritoController;
+use App\Http\Controllers\AdminController;
+use App\Http\Middleware\AdminMiddleware;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -33,3 +35,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/salvos', [FavoritoController::class, 'index'])->name('favoritos.index');
     Route::post('/favoritos/{postagem_id}', [FavoritoController::class, 'toggle'])->name('favoritos.toggle');
 });
+
+Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->name('admin.')->group(function () {
+     Route::get('/dashboard',         [AdminController::class, 'dashboard'])       ->name('dashboard');
+     Route::get('/usuarios',          [AdminController::class, 'usuarios'])        ->name('usuarios');
+     Route::delete('/usuarios/{user}',[AdminController::class, 'banirUsuario'])    ->name('banir');
+     Route::get('/postagens',         [AdminController::class, 'postagens'])       ->name('postagens');
+     Route::delete('/postagens/{postagem}', [AdminController::class, 'excluirPostagem'])->name('excluir-postagem');
+ });

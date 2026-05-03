@@ -9,10 +9,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('phone')->nullable()->after('email');
-            $table->string('location')->nullable()->after('phone');
-            $table->string('profile_image')->nullable()->after('location');
-            $table->text('description')->nullable()->after('profile_image');
+            if (!Schema::hasColumn('users', 'phone')) {
+                $table->string('phone')->nullable()->after('email');
+            }
+            if (!Schema::hasColumn('users', 'location')) {
+                $table->string('location')->nullable()->after('phone');
+            }
+            if (!Schema::hasColumn('users', 'profile_image')) {
+                $table->string('profile_image')->nullable()->after('location');
+            }
+            if (!Schema::hasColumn('users', 'description')) {
+                $table->text('description')->nullable()->after('profile_image');
+            }
         });
     }
 
@@ -23,3 +31,4 @@ return new class extends Migration
         });
     }
 };
+
