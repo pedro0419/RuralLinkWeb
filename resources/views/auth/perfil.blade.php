@@ -335,6 +335,27 @@
                 @endif
             </div>
 
+            <div>
+                {{-- Mensagem de erro --}}
+                @if (session('error'))
+                    <div style="
+                        margin: 14px 14px 0;
+                        background: #fef2f2;
+                        border: 1.5px solid #fca5a5;
+                        border-radius: 14px;
+                        padding: 12px 14px;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                    ">
+                        <svg width="16" height="16" fill="none" stroke="#ef4444" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                        </svg>
+                        <span style="font-size:12px; font-weight:800; color:#dc2626;">{{ session('error') }}</span>
+                    </div>
+                @endif
+            </div>
+
             <div style="margin:12px 14px 28px; background:white; border-radius:18px; padding:16px; box-shadow:0 2px 10px rgba(0,0,0,0.07);">
                 <p style="font-size:14px; font-weight:900; color:#111; margin:0 0 14px;">Meus Produtos</p>
 

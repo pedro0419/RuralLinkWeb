@@ -118,7 +118,8 @@ class PostagemController extends Controller
         $postagem = Postagem::findOrFail($id);
 
         if ($postagem->user_id !== auth()->id()) {
-            abort(403);
+            return redirect()->back()
+                ->with('error', 'Você não tem permissão para deletar esta postagem.');
         }
 
         $postagem->delete();
