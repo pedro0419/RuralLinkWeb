@@ -83,7 +83,7 @@ class LoginController extends Controller
 
         $imagePath = null;
         if ($request->hasFile('profile_image')) {
-            $imagePath = $request->file('foto')->store('produtos', 's3');
+            $imagePath = $request->file('profile_image')->store('perfis', 's3');
         }
 
         $user = User::create([
@@ -157,11 +157,11 @@ class LoginController extends Controller
     if ($request->hasFile('profile_image')) {
         // Deleta a imagem antiga se existir
         if ($user->profile_image) {
-            Storage::disk('public')->delete($user->profile_image);
+            Storage::disk('s3')->delete($user->profile_image);
         }
 
         // Faz o upload e salva o caminho
-        $data['profile_image'] = $request->file('profile_image')->store('profile_images', 'public');
+        $data['profile_image'] = $request->file('profile_image')->store('profile_images', 's3');
     }
 
     $user->update($data);
