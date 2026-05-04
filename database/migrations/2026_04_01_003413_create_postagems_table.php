@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('postagems', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('foto');
             $table->string('nome');
             $table->enum('selo', ['organico', 'empresa', 'autonomo', 'cooperativa']);

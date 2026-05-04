@@ -1,5 +1,6 @@
 @extends('admin.layout')
 @section('titulo', 'Postagens')
+@use('Illuminate\Support\Facades\Storage')
 
 @push('styles')
 <style>
@@ -143,8 +144,8 @@
             @forelse($postagens as $p)
             <tr>
                 <td>
-                    <img src="{{ asset('storage/' . $p->foto) }}" alt="{{ $p->nome }}" class="foto-thumb"
-                         onerror="this.src='https://via.placeholder.com/44'">
+                    <img src="{{ Storage::disk('s3')->url($p->foto) }}" alt="{{ $p->nome }}" class="foto-thumb"
+                    onerror="this.onerror=null;this.src='{{ asset('assets/imgvazio.png') }}'">
                 </td>
                 <td><strong>{{ $p->nome }}</strong></td>
                 <td><span class="selo-badge selo-{{ $p->selo }}">{{ $p->selo }}</span></td>
@@ -166,9 +167,5 @@
             @endforelse
         </tbody>
     </table>
-
-    <div class="pagination-wrap">
-        {{ $postagens->links() }}
-    </div>
 </div>
 @endsection
