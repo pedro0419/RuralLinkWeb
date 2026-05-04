@@ -137,7 +137,7 @@
           <div class="product-card">
             <div class="product-card-top">
                 @if($postagem->foto)
-                  <img src="{{ Storage::url($postagem->foto) }}" class="product-img" />
+                  <img src="{{ Storage::disk('s3')->url($postagem->foto) }}" class="product-img" />
                 @else
                   <div class="product-img-placeholder">
                     <svg width="28" height="28" fill="none" stroke="#86efac" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -183,7 +183,7 @@
                 <div style="border-top: 1.5px solid #f0fdf4; margin-top: 8px; padding-top: 12px;">
                   <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
                     @if($postagem->user->profile_image)
-                      <img src="{{ Storage::url($postagem->user->profile_image) }}" class="produtor-foto" />
+                      <img src="{{ Storage::disk('s3')->url($postagem->user->profile_image) }}" class="produtor-foto" />
                     @else
                       <div class="produtor-foto-placeholder">
                         {{ strtoupper(substr($postagem->user->name, 0, 1)) }}

@@ -69,7 +69,7 @@ class PostagemController extends Controller
             'quantidade.min'      => 'A quantidade deve ser maior que zero.',
         ]);
 
-        $fotoPath = $request->file('foto')->store('produtos', 'public');
+        $fotoPath = $request->file('foto')->store('produtos', 's3');
 
         Postagem::create([
             'user_id'    => auth()->id(),

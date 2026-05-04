@@ -172,7 +172,7 @@
           @auth
           <a href="{{ route('perfil.show') }}" style="width:40px;height:40px;border-radius:50%;border:2px solid rgba(255,255,255,0.3);overflow:hidden;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.1);">
             @if(auth()->user()->profile_image)
-              <img src="{{ Storage::url(auth()->user()->profile_image) }}" style="width:100%;height:100%;object-fit:cover;" />
+              <img src="{{ Storage::disk('s3')->url(auth()->user()->profile_image) }}" style="width:100%;height:100%;object-fit:cover;" />
             @else
               <span style="color:white;font-weight:900;font-size:15px;">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
             @endif
@@ -226,7 +226,7 @@
               {{-- Linha principal --}}
               <div class="product-card-top">
                 @if($post->foto)
-                  <img src="{{ Storage::url($post->foto) }}" class="product-img" />
+                  <img src="{{ Storage::disk('s3')->url($post->foto) }}" class="product-img" class="product-img" />
                 @else
                   <div class="product-img-placeholder">
                     <svg width="28" height="28" fill="none" stroke="#86efac" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -285,7 +285,7 @@
                   {{-- Foto e nome do produtor --}}
                   <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
                     @if($post->user->profile_image)
-                      <img src="{{ Storage::url($post->user->profile_image) }}" class="produtor-foto" />
+                      <img src="{{ Storage::disk('s3')->url($post->user->profile_image) }}" class="produtor-foto" />
                     @else
                       <div class="produtor-foto-placeholder">
                         {{ strtoupper(substr($post->user->name, 0, 1)) }}
