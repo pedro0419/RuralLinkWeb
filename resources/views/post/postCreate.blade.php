@@ -139,7 +139,7 @@
                 <div style="display:flex; align-items:center; gap:10px; margin-bottom: 20px;">
                     <div style="width:44px; height:44px; border-radius:50%; border:2.5px solid #22c55e; outline:2px solid white; overflow:hidden; display:flex; align-items:center; justify-content:center; background:rgba(34,197,94,0.1);">
                         @if(auth()->user()->profile_image)
-                            <img src="{{ Storage::url(auth()->user()->profile_image) }}" style="width:100%; height:100%; object-fit:cover;" />
+                            <img src="{{ Storage::disk('s3')->url(auth()->user()->profile_image) }}" style="width:100%; height:100%; object-fit:cover;" />
                         @else
                             <span style="color:#16a34a; font-weight:900; font-size:16px;">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
                         @endif
