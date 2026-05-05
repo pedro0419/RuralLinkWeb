@@ -121,11 +121,11 @@ class PostagemController extends Controller
         $postagem = Postagem::find($id);
 
         if (!$postagem) {
-            return redirect()->back()->with('error', 'Essa postagem não existe mais.');
+            return redirect()->back()->with('error', 'Essa postagem não existe.');
         }
 
         if ($postagem->user_id !== auth()->id()) {
-            return redirect()->back()->with('error', 'Você não tem permissão para deletar.');
+            return redirect()->back()->with('error', 'Você não tem permissão para deletar essa postagem.');
         }
 
         $postagem->delete();
