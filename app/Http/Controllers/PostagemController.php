@@ -118,16 +118,18 @@ class PostagemController extends Controller
      */
     public function destroy($id)
     {
-        $postagem = Postagem::findOrFail($id);
+        $postagem = Postagem::find($id);
+
+        if (!$postagem) {
+            return redirect()->back()->with('error', 'Essa postagem não existe mais.');
+        }
 
         if ($postagem->user_id !== auth()->id()) {
-            return redirect()->back()
-                ->with('error', 'Você não tem permissão para deletar esta postagem.');
+            return redirect()->back()->with('error', 'Você não tem permissão para deletar.');
         }
 
         $postagem->delete();
 
-        return redirect()->route('perfil.show')
-            ->with('success', 'Postagem deletada com sucesso!');
+        return redirect()->back()->with('success', 'Postagem deletada com sucesso!');
     }
 }
