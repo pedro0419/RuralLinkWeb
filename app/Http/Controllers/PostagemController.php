@@ -12,24 +12,26 @@ class PostagemController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Postagem::query();
-
+        $query = Postagem::with('user');
+    
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
                 $q->where('nome', 'like', '%' . $request->search . '%')
-                ->orWhere('descricao', 'like', '%' . $request->search . '%')
-                ->orWhere('selo', 'like', '%' . $request->search . '%');
+                  ->orWhere('descricao', 'like', '%' . $request->search . '%')
+                  ->orWhere('selo', 'like', '%' . $request->search . '%')
+                  ->orWhereHas('user', function ($u) use ($request) {
+                      $u->where('name', 'like', '%' . $request->search . '%');
+                  });
             });
         }
-
+    
         if ($request->filled('selo')) {
             $query->where('selo', $request->selo);
         }
-
+    
         $posts = $query->latest()->get();
-
+    
         return view('homePage', compact('posts'));
-
     }
 
     /**
@@ -37,6 +39,7 @@ class PostagemController extends Controller
      */
     public function create()
     {
+        $user = auth()->user();
         return view('post.postCreate');
     }
 

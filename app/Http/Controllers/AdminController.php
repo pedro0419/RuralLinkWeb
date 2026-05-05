@@ -48,7 +48,7 @@ class AdminController extends Controller
             $query->where('nome', 'like', '%' . $request->busca . '%');
         }
  
-        $postagens = $query->paginate(15);
+        $postagens = $query->get();
         return view('admin.postagens', compact('postagens'));
     }
  
