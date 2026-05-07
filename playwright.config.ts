@@ -9,16 +9,24 @@ export default defineConfig({
   timeout: 30000,
   reporter: 'html',
   use: {
-    baseURL: 'http://127.0.0.1:8000',
+    baseURL: process.env.APP_URL || 'http://127.0.0.1:8000',
     trace: 'on-first-retry',
     ignoreHTTPSErrors: true,
   },
+
+  // Só inicia o servidor local se não tiver APP_URL definido
+  webServer: process.env.APP_URL ? undefined : {
+    command: 'php artisan serve',
+    url: 'http://127.0.0.1:8000',
+    reuseExistingServer: true,
+    timeout: 120 * 1000,
+  },
+
   projects: [
     {
       name: 'chromium',
       use: { 
         ...devices['Desktop Chrome'],
-        // Ignora erros de recursos externos
         launchOptions: {
           args: ['--ignore-certificate-errors']
         }
@@ -26,3 +34,5 @@ export default defineConfig({
     },
   ],
 });
+
+// $env:APP_URL="https://ruralink.free.laravel.cloud"; npx playwright test --ui
