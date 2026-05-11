@@ -150,7 +150,7 @@
                     </div>
                 </div>
 
-                {{-- Erros --}}
+                <!-- {{-- Erros --}}
                 @if ($errors->any())
                     <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 10px; border-radius: 12px; margin-bottom: 15px;">
                         <ul style="margin: 0; padding-left: 15px;">
@@ -159,7 +159,7 @@
                             @endforeach
                         </ul>
                     </div>
-                @endif
+                @endif -->
 
                 <form action="{{ route('post.store') }}" method="POST" enctype="multipart/form-data" style="display:flex; flex-direction:column; gap:12px;">
                     @csrf
