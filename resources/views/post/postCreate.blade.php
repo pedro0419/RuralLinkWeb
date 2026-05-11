@@ -273,25 +273,72 @@
     const precoDisplay = document.getElementById('preco_display');
     const precoHidden  = document.getElementById('preco_kg');
 
+    // cria mensagem de erro dinamicamente
+    const precoError = document.createElement('span');
+    precoError.className = 'error-msg';
+    precoError.style.display = 'none';
+    precoDisplay.parentNode.appendChild(precoError);
+
     function formatBRL(value) {
         const digits = value.replace(/\D/g, '');
+
         if (!digits) return '';
+
         const num      = parseInt(digits, 10);
         const reais    = Math.floor(num / 100);
         const centavos = num % 100;
+
         return 'R$ ' + reais.toLocaleString('pt-BR') + ',' + String(centavos).padStart(2, '0');
     }
 
     precoDisplay.addEventListener('input', function () {
+
         this.value = formatBRL(this.value);
+
         const digits = this.value.replace(/\D/g, '');
-        precoHidden.value = digits ? (parseInt(digits, 10) / 100).toFixed(2) : '';
+
+        const valor = digits
+            ? (parseInt(digits, 10) / 100)
+            : 0;
+
+        // erro visual
+        if (valor > 1000000) {
+
+            this.style.borderColor = '#ef4444';
+            this.style.background = '#fef2f2';
+
+            precoError.textContent = 'O preço não pode ultrapassar R$ 1.000.000,00.';
+            precoError.style.display = 'block';
+
+            precoHidden.value = '1000000.00';
+            this.value = 'R$ 1.000.000,00';
+
+            return;
+        }
+
+        // remove erro
+        this.style.borderColor = '#e5e7eb';
+        this.style.background = '#f8fafb';
+
+        precoError.style.display = 'none';
+
+        precoHidden.value = valor
+            ? valor.toFixed(2)
+            : '';
     });
 
     // Inicializa se tiver old() value
     if (precoDisplay.value) {
+
         const digits = precoDisplay.value.replace(/\D/g, '');
-        precoHidden.value = digits ? (parseInt(digits, 10) / 100).toFixed(2) : '';
+
+        const valor = digits
+            ? (parseInt(digits, 10) / 100)
+            : 0;
+
+        precoHidden.value = valor
+            ? valor.toFixed(2)
+            : '';
     }
 </script>
 </body>
