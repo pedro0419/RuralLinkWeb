@@ -52,8 +52,8 @@ class PostagemController extends Controller
             'foto'        => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
             'nome'        => 'required|string|max:255',
             'selo'        => 'required|string|in:organico,empresa,autonomo,cooperativa',
-            'preco_kg'    => 'required|numeric|min:0.01',
-            'quantidade'  => 'required|numeric|min:0.1',
+            'preco_kg'    => 'required|numeric|min:0.01|max:1000000',            
+            'quantidade'  => 'required|numeric|min:0.1|max:1000000',
             'descricao'   => 'nullable|string|max:1000',
         ],[
             'foto.required'       => 'A foto do produto é obrigatória.',
@@ -67,9 +67,11 @@ class PostagemController extends Controller
             'preco_kg.required'   => 'O preço por kg é obrigatório.',
             'preco_kg.numeric'    => 'O preço deve ser um número.',
             'preco_kg.min'        => 'O preço deve ser maior que zero.',
+            'preco_kg.max'        => 'O preço não pode ultrapassar R$ 1.000.000,00.',
             'quantidade.required' => 'A quantidade disponível é obrigatória.',
             'quantidade.numeric'  => 'A quantidade deve ser um número.',
             'quantidade.min'      => 'A quantidade deve ser maior que zero.',
+            'quantidade.max'      => 'A quantidade não pode ultrapassar 1.000.000.',
         ]);
 
         $fotoPath = $request->file('foto')->store('produtos', 's3');
