@@ -273,12 +273,6 @@
     const precoDisplay = document.getElementById('preco_display');
     const precoHidden  = document.getElementById('preco_kg');
 
-    // cria mensagem de erro dinamicamente
-    const precoError = document.createElement('span');
-    precoError.className = 'error-msg';
-    precoError.style.display = 'none';
-    precoDisplay.parentNode.appendChild(precoError);
-
     function formatBRL(value) {
         const digits = value.replace(/\D/g, '');
 
@@ -307,9 +301,6 @@
             this.style.borderColor = '#ef4444';
             this.style.background = '#fef2f2';
 
-            precoError.textContent = 'O preço não pode ultrapassar R$ 1.000.000,00.';
-            precoError.style.display = 'block';
-
             precoHidden.value = '1000000.00';
             this.value = 'R$ 1.000.000,00';
 
@@ -319,8 +310,6 @@
         // remove erro
         this.style.borderColor = '#e5e7eb';
         this.style.background = '#f8fafb';
-
-        precoError.style.display = 'none';
 
         precoHidden.value = valor
             ? valor.toFixed(2)
