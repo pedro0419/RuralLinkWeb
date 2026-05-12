@@ -91,42 +91,6 @@
 @endpush
 
 @section('conteudo')
-
-@section('conteudo')
-
-@if(session('erro'))
-<div style="
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    background: #fff5f5;
-    border: 1px solid #f09595;
-    border-left: 4px solid #E24B4A;
-    border-radius: 8px;
-    padding: 12px 16px;
-    margin-bottom: 20px;
-    font-size: .88rem;
-    color: #7a1f1f;
-">
-    ⚠️ {{ session('erro') }}
-</div>
-@endif
-
-@if(session('sucesso'))
-<div style="
-    background: #f0fdf4;
-    border: 1px solid #97c459;
-    border-left: 4px solid #3B6D11;
-    border-radius: 8px;
-    padding: 12px 16px;
-    margin-bottom: 20px;
-    font-size: .88rem;
-    color: #1a3d08;
-">
-    ✓ {{ session('sucesso') }}
-</div>
-@endif
-
 <div class="table-wrap">
     <table>
         <thead>
