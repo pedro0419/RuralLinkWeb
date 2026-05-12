@@ -309,24 +309,20 @@
     // --- Validação Estoque (Máximo 1.000.000) ---
     const inputEstoque = document.getElementById('quantidade');
     inputEstoque.addEventListener('input', function() {
+        // Remove qualquer caractere que não seja número ou ponto/vírgula
+        this.value = this.value.replace(/[^0-9.]/g, '');
+
         let valor = parseFloat(this.value);
 
         if (valor > 1000000) {
             this.style.borderColor = '#ef4444';
             this.style.background = '#fef2f2';
-            this.value = 1000000; // Trava o valor no máximo
+            this.value = 1000000; // Força o limite máximo
         } else {
             this.style.borderColor = '#e5e7eb';
             this.style.background = '#f8fafb';
         }
     });
-
-    // Inicializa se tiver old() value
-    if (precoDisplay.value) {
-        const digits = precoDisplay.value.replace(/\D/g, '');
-        const valor = digits ? (parseInt(digits, 10) / 100) : 0;
-        precoHidden.value = valor ? valor.toFixed(2) : '';
-    }
 </script>
 </body>
 </html>
