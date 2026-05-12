@@ -269,65 +269,63 @@
         reader.readAsDataURL(file);
     }
 
+    // --- Validação Nome do Produto (NÃO permite números) ---
+    const inputNome = document.getElementById('nome');
+    inputNome.addEventListener('input', function() {
+        // Remove números e caracteres especiais, mantém apenas letras e espaços
+        this.value = this.value.replace(/[0-9]/g, '');
+    });
+
     // --- Máscara de preço BRL ---
     const precoDisplay = document.getElementById('preco_display');
     const precoHidden  = document.getElementById('preco_kg');
 
     function formatBRL(value) {
         const digits = value.replace(/\D/g, '');
-
         if (!digits) return '';
-
         const num      = parseInt(digits, 10);
         const reais    = Math.floor(num / 100);
         const centavos = num % 100;
-
         return 'R$ ' + reais.toLocaleString('pt-BR') + ',' + String(centavos).padStart(2, '0');
     }
 
     precoDisplay.addEventListener('input', function () {
-
         this.value = formatBRL(this.value);
-
         const digits = this.value.replace(/\D/g, '');
+        const valor = digits ? (parseInt(digits, 10) / 100) : 0;
 
-        const valor = digits
-            ? (parseInt(digits, 10) / 100)
-            : 0;
-
-        // erro visual
         if (valor > 1000000) {
-
             this.style.borderColor = '#ef4444';
             this.style.background = '#fef2f2';
-
             precoHidden.value = '1000000.00';
             this.value = 'R$ 1.000.000,00';
-
             return;
         }
-
-        // remove erro
         this.style.borderColor = '#e5e7eb';
         this.style.background = '#f8fafb';
+        precoHidden.value = valor ? valor.toFixed(2) : '';
+    });
 
-        precoHidden.value = valor
-            ? valor.toFixed(2)
-            : '';
+    // --- Validação Estoque (Máximo 1.000.000) ---
+    const inputEstoque = document.getElementById('quantidade');
+    inputEstoque.addEventListener('input', function() {
+        let valor = parseFloat(this.value);
+
+        if (valor > 1000000) {
+            this.style.borderColor = '#ef4444';
+            this.style.background = '#fef2f2';
+            this.value = 1000000; // Trava o valor no máximo
+        } else {
+            this.style.borderColor = '#e5e7eb';
+            this.style.background = '#f8fafb';
+        }
     });
 
     // Inicializa se tiver old() value
     if (precoDisplay.value) {
-
         const digits = precoDisplay.value.replace(/\D/g, '');
-
-        const valor = digits
-            ? (parseInt(digits, 10) / 100)
-            : 0;
-
-        precoHidden.value = valor
-            ? valor.toFixed(2)
-            : '';
+        const valor = digits ? (parseInt(digits, 10) / 100) : 0;
+        precoHidden.value = valor ? valor.toFixed(2) : '';
     }
 </script>
 </body>
