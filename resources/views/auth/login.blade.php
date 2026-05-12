@@ -91,7 +91,13 @@
                         <span class="icon-container">
                             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 10-8 0v4"/></svg>
                         </span>
-                        <input type="password" name="password" class="input-login" placeholder="Senha" required>
+                        <input type="password" name="password" id="loginPass" class="input-login" placeholder="Senha" required>
+                        
+                        <button type="button" onclick="toggleLoginPass()" class="absolute inset-y-0 right-4 flex items-center text-gray-400">
+                            <svg id="eyeIcon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path id="eyePath" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                            </svg>
+                        </button>
                     </div>
 
                     <button type="submit" class="btn-entrar">Entrar na plataforma</button>
@@ -109,6 +115,25 @@
         <div class="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1.5 bg-white/20 rounded-full"></div>
     </div>
 </div>
+
+<script>
+    function toggleLoginPass() {
+        const input = document.getElementById('loginPass');
+        const path = document.getElementById('eyePath');
+        
+        // Paths extraídos do seu código de registro
+        const eyeOpen = "M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z M12 15a3 3 0 100-6 3 3 0 000 6z";
+        const eyeClosed = "M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18";
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            path.setAttribute('d', eyeOpen);
+        } else {
+            input.type = 'password';
+            path.setAttribute('d', eyeClosed);
+        }
+    }
+</script>
 
 </body>
 </html>
