@@ -150,17 +150,6 @@
                     </div>
                 </div>
 
-                <!-- {{-- Erros --}}
-                @if ($errors->any())
-                    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 10px; border-radius: 12px; margin-bottom: 15px;">
-                        <ul style="margin: 0; padding-left: 15px;">
-                            @foreach ($errors->all() as $error)
-                                <li style="color: #991b1b; font-size: 11px; font-weight: 800;">{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif -->
-
                 <form action="{{ route('post.store') }}" method="POST" enctype="multipart/form-data" style="display:flex; flex-direction:column; gap:12px;">
                     @csrf
 
@@ -212,7 +201,7 @@
                         <span style="position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none;">
                             <svg width="18" height="18" fill="none" stroke="#22c55e" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         </span>
-                        <input type="text" id="preco_display" placeholder=" " class="input-field" inputmode="numeric"
+                        <input type="text" id="preco_display" placeholder=" " class="input-field" max="999999" inputmode="numeric" 
                                value="{{ old('preco_kg') ? 'R$ ' . number_format(old('preco_kg'), 2, ',', '.') : '' }}" />
                         <label for="preco_display">Preço por kg (R$)</label>
                         {{-- Campo hidden envia o valor numérico limpo pro backend --}}
@@ -225,7 +214,7 @@
                         <span style="position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none;">
                             <svg width="18" height="18" fill="none" stroke="#22c55e" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                         </span>
-                        <input type="number" name="quantidade" id="quantidade" value="{{ old('quantidade') }}" placeholder=" " step="0.1" class="input-field" />
+                        <input type="number" name="quantidade" id="quantidade" value="{{ old('quantidade') }}" placeholder=" " step="0.1" max="999999" class="input-field" />
                         <label for="quantidade">Estoque (kg)</label>
                         @error('quantidade') <span class="error-msg">{{ $message }}</span> @enderror
                     </div>
@@ -290,34 +279,38 @@
     }
 
     precoDisplay.addEventListener('input', function () {
-        this.value = formatBRL(this.value);
         const digits = this.value.replace(/\D/g, '');
         const valor = digits ? (parseInt(digits, 10) / 100) : 0;
 
-        if (valor > 1000000) {
+        if (valor > 999999.99) {
             this.style.borderColor = '#ef4444';
             this.style.background = '#fef2f2';
-            precoHidden.value = '1000000.00';
-            this.value = 'R$ 1.000.000,00';
+            precoHidden.value = '999999.99';
+            this.value = 'R$ 999.999,99';
             return;
         }
+
+        this.value = formatBRL(this.value);
         this.style.borderColor = '#e5e7eb';
         this.style.background = '#f8fafb';
         precoHidden.value = valor ? valor.toFixed(2) : '';
     });
 
-    // --- Validação Estoque (Máximo 1.000.000) ---
-    const inputEstoque = document.getElementById('quantidade');
-    inputEstoque.addEventListener('input', function() {
-        // Remove qualquer caractere que não seja número ou ponto/vírgula
-        this.value = this.value.replace(/[^0-9.]/g, '');
+    // Inicializa se tiver old() value
+    if (precoDisplay.value) {
+        const digits = precoDisplay.value.replace(/\D/g, '');
+        const valor = digits ? (parseInt(digits, 10) / 100) : 0;
+        precoHidden.value = valor ? valor.toFixed(2) : '';
+    }
 
-        let valor = parseFloat(this.value);
+    // --- Limite do estoque ---
+    const quantidadeInput = document.getElementById('quantidade');
 
-        if (valor > 1000000) {
+    quantidadeInput.addEventListener('input', function () {
+        if (parseFloat(this.value) > 999999) {
+            this.value = 999999;
             this.style.borderColor = '#ef4444';
             this.style.background = '#fef2f2';
-            this.value = 1000000; // Força o limite máximo
         } else {
             this.style.borderColor = '#e5e7eb';
             this.style.background = '#f8fafb';
