@@ -23,15 +23,16 @@ Route::get('/busca', [ProcurarController::class, 'index'])->name('procurar.index
 
 // Protegidas (precisa estar logado)
 Route::middleware('auth')->group(function () {
-    Route::get('/TelaInicial',           [PostagemController::class, 'index'])->name('post.index');
+    Route::get('/TelaInicial',        [PostagemController::class, 'index'])->name('post.index');
     Route::get('/postagem/create',    [PostagemController::class, 'create'])->name('post.create');
     Route::post('/postagem',          [PostagemController::class, 'store'])->name('post.store');
     Route::delete('/postagem/{id}',   [PostagemController::class, 'destroy'])->name('post.delete');
 
-    Route::get('/perfil/editar', [LoginController::class, 'showEditPerfil'])->name('perfil.edit');
-    Route::put('/perfil/editar', [LoginController::class, 'updatePerfil'])->name('perfil.update');
-    Route::get('/perfil', [LoginController::class, 'showPerfil'])->name('perfil.show');
-    
+    Route::get('/perfil/editar',      [LoginController::class, 'showEditPerfil'])->name('perfil.edit');
+    Route::put('/perfil/editar',      [LoginController::class, 'updatePerfil'])->name('perfil.update');
+    Route::get('/perfil',             [LoginController::class, 'showPerfil'])->name('perfil.show');
+    Route::delete('/perfil',          [LoginController::class, 'destroy'])->name('perfil.destroy');
+
     Route::get('/salvos', [FavoritoController::class, 'index'])->name('favoritos.index');
     Route::post('/favoritos/{postagem_id}', [FavoritoController::class, 'toggle'])->name('favoritos.toggle');
 });
