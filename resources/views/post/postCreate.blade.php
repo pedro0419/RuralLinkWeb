@@ -285,13 +285,13 @@
             : 0;
 
         // erro visual
-        if (valor > 1000000) {
+        if (valor > 999999.99) {
 
             this.style.borderColor = '#ef4444';
             this.style.background = '#fef2f2';
 
-            precoHidden.value = '1000000.00';
-            this.value = 'R$ 1.000.000,00';
+            precoHidden.value = '999999.99';
+            this.value = 'R$ 999.999,99';
 
             return;
         }
