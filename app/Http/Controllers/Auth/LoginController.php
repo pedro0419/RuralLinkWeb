@@ -174,4 +174,28 @@ class LoginController extends Controller
         $user = Auth::user()->load('postagens');
         return view('auth.perfil', compact('user'));
     }
+    
+    public function destroy(Request $request)
+    {
+        $user = Auth::user();
+
+        // Deleta a imagem de perfil do S3 se existir
+        if ($user->profile_image) {
+            Storage::disk('s3')->delete($user->profile_image);
+        }
+
+        // Deleta as fotos dos produtos do usuário
+        foreach ($user->postagens as $postagem) {
+            Storage::disk('s3')->delete($postagem->foto);
+        }
+
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        $user->delete();
+
+        return redirect()->route('login')->with('success', 'Conta deletada com sucesso.');
+    }
 }
+
