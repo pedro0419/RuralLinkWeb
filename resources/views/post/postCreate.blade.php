@@ -258,6 +258,13 @@
         reader.readAsDataURL(file);
     }
 
+    // --- Validação Nome do Produto (NÃO permite números) ---
+    const inputNome = document.getElementById('nome');
+    inputNome.addEventListener('input', function() {
+        // Remove números e caracteres especiais, mantém apenas letras e espaços
+        this.value = this.value.replace(/[0-9]/g, '');
+    });
+
     // --- Máscara de preço BRL ---
     const precoDisplay = document.getElementById('preco_display');
     const precoHidden  = document.getElementById('preco_kg');
