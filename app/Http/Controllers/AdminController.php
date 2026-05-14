@@ -45,15 +45,22 @@ class AdminController extends Controller
     public function postagens(Request $request)
     {
         $query = Postagem::with('user')->latest();
- 
+
         if ($request->filled('selo')) {
             $query->where('selo', $request->selo);
         }
- 
+
         if ($request->filled('busca')) {
-            $query->where('nome', 'like', '%' . $request->busca . '%');
+            $termo = '%' . $request->busca . '%';
+
+            $query->where(function ($q) use ($termo) {
+                $q->where('nome', 'like', $termo)
+                ->orWhereHas('user', function ($u) use ($termo) {
+                    $u->where('name', 'like', $termo);
+                });
+            });
         }
- 
+
         $postagens = $query->get();
         return view('admin.postagens', compact('postagens'));
     }
